@@ -13,4 +13,10 @@ mechanize.open_timeout = 5
 mechanize.read_timeout = 10
 
 require "awesome_print"
-puts getInstanceTypes(:mechanize => mechanize).ai
+require "colorize"
+
+begin
+  puts getInstanceTypes(:mechanize => mechanize).ai
+rescue Timeout::Error => e
+  puts "Unable to retrieve instance type details in a reasonable time (#{mechanize.open_timeout}s). Giving up ...".light_red
+end
