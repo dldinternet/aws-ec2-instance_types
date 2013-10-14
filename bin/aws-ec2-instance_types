@@ -1,0 +1,11 @@
+#!/usr/bin/env ruby
+
+# Adjust lib path
+_lib=File.expand_path(File.dirname(__FILE__) + '/../lib')
+$:.unshift(_lib) unless $:.include?(_lib)
+
+require "dldinternet/aws/ec2"
+include DLDInternet::AWS::EC2
+
+require "awesome_print"
+puts getInstanceTypes.ai

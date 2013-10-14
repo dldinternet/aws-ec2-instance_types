@@ -13,3 +13,7 @@ group :development do
   gem "jeweler", "~> 1.8.7"
   gem "rcov", ">= 0"
 end
+
+gem "mechanize"
+gem "nokogiri"
+gem "awesome_print"

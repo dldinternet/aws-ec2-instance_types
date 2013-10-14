@@ -5,9 +5,11 @@ coverage.data
 # rdoc generated
 rdoc
 
-# yard generated
-doc
+
+# YARD artifacts
 .yardoc
+_yardoc
+doc/
 
 # bundler
 .bundle
