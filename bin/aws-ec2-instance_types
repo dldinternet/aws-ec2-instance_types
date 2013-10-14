@@ -7,5 +7,10 @@ $:.unshift(_lib) unless $:.include?(_lib)
 require "dldinternet/aws/ec2"
 include DLDInternet::AWS::EC2
 
+require "mechanize"
+mechanize = Mechanize.new
+mechanize.open_timeout = 5
+mechanize.read_timeout = 10
+
 require "awesome_print"
-puts getInstanceTypes.ai
+puts getInstanceTypes(:mechanize => mechanize).ai
