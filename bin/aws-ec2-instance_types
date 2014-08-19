@@ -7,16 +7,16 @@ $:.unshift(_lib) unless $:.include?(_lib)
 require "dldinternet/aws/ec2"
 include DLDInternet::AWS::EC2
 
-require "mechanize"
+require 'mechanize'
 mechanize = Mechanize.new
 mechanize.open_timeout = 5
 mechanize.read_timeout = 10
 
-require "awesome_print"
-require "colorize"
+require 'awesome_print'
+require 'colorize'
 
 begin
-  puts getInstanceTypes(:mechanize => mechanize)[:instance_type_details].ai
+  puts getInstanceTypes(:mechanize => mechanize).ai
 rescue Timeout::Error => e
   puts "Unable to retrieve instance type details in a reasonable time (#{mechanize.open_timeout}s). Giving up ...".light_red
 end

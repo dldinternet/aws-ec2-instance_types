@@ -2,30 +2,33 @@ module DLDInternet
   module AWS
     module EC2
       class Error < StandardError ; end
-      HEADINGS = [
-          :instance_family,         # [0]
-          :instance_type,           # [1]
-          :processor_arch,          # [2]
-          :vCPU,                    # [3]
-          :ECU,                     # [4]
-          :memory,                  # [5]
-          :instance_storage,        # [6]
-          :EBS_optimized_available, # [7]
-          :network_performance      # [8]
-      ]
+      # HEADINGS = [
+      #     :instance_family,         # [0]
+      #     :instance_type,           # [1]
+      #     :processor_arch,          # [2]
+      #     :vCPU,                    # [3]
+      #     :ECU,                     # [4]
+      #     :memory,                  # [5]
+      #     :instance_storage,        # [6]
+      #     :EBS_optimized_available, # [7]
+      #     :network_performance      # [8]
+      # ]
+      #'Instance Type','vCPU','Memory (GiB)',' Storage (GB)','Networking Performance','Physical Processor','Clock Speed (GHz)','Intel® AES-NI','Intel® AVX†','Intel® Turbo','EBS OPT','Enhanced Networking'
       HEADINGS_CPU = [
-          :instance_family,			    # [0]
-          :instance_type,				    # [1]
-          :processor_arch,			    # [2]
-          :vCPU,						        # [3]
-          :ECU,						          # [4]
+          :instance_type,				    # [0]
+          :vCPU,                    # [1]
+          :memory,                  # [2]
+          :instance_storage,        # [3]
+          :networking_performance,	# [4]
           :physical_processor,	    # [5]
-          :Intel_AES_NI,				    # [6]
-          :Intel_AVX,						    # [7]
-          :Intel_Turbo,					    # [8]
-
+          :clock_speed,       	    # [6]
+          :Intel_AES_NI,				    # [7]
+          :Intel_AVX,						    # [8]
+          :Intel_Turbo,					    # [9]
+          :EBS_OPT,                 # [10]
+          :enhanced_networking      # [11]
       ]
-
+      DEBUG = true
       attr_reader :instance_types
 
       # ---------------------------------------------------------------------------------------------------------------
@@ -42,20 +45,54 @@ module DLDInternet
 
           page = mechanize.get(url)
 
-          require "nokogiri"
-          nk = Nokogiri::HTML(page.body)
-          div = nk.css("div#yui-main div.yui-b")
-          tables = div.search('table')
+          require 'nokogiri'
 
-          @instance_types[:instance_type_details] = scrapeTable(HEADINGS,     tables[0])
-          @instance_types[:processor_details]     = scrapeTable(HEADINGS_CPU, tables[1])
+          nk = Nokogiri::HTML(page.body)
+          # noinspection RubyAssignmentExpressionInConditionalInspection
+          if div = find_div(nk, %r'^<div\s+class="nine columns content-with-nav')
+            # noinspection RubyAssignmentExpressionInConditionalInspection
+            if div = find_div(div, %r'^<div\s+class="content parsys')
+              divs = div.css('div').to_a
+              itm = nil
+              idx = 0
+              divs.each do |d|
+                as = d.css('div div h2 a')
+                as.each do |a|
+                  # puts "'#{a.text}'"
+                  if a.text == ' Instance Types Matrix '
+                    itm = d
+                    break
+                  end
+                end
+                break if itm
+                idx += 1
+              end
+              itm = divs[idx+1+2]
+              table = itm.css('div table').first
+              # puts "#{idx}: #{table.to_s}"
+              @instance_types = scrapeTable(HEADINGS_CPU, table)
+            end
+          end
         end
         @instance_types
       end
 
+      def find_div(nk,regex)
+        ret = nil
+        divs = nk.search('div')
+        if divs.count > 0
+          nine = divs.select { |div| div.to_s.match regex }
+          if nine.count == 1
+            nine = nine.shift
+            ret = nine
+          end
+        end
+        ret
+      end
+
       # ---------------------------------------------------------------------------------------------------------------
       def scrapeTable(cHeadings,table)
-        raise Error.new "Cannot find instance type table" unless table.is_a?(Nokogiri::XML::Element)
+        raise Error.new 'Cannot find instance type table' unless table.is_a?(Nokogiri::XML::Element)
         rows = table.search('tr')[0..-1]
         head = rows.shift
 
