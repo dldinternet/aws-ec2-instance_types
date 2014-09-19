@@ -3,20 +3,14 @@
 # Adjust lib path
 _lib=File.expand_path(File.dirname(__FILE__) + '/../lib')
 $:.unshift(_lib) unless $:.include?(_lib)
+require 'dldinternet/aws/ec2/instance_types/cli'
 
-require "dldinternet/aws/ec2"
-include DLDInternet::AWS::EC2
-
-require 'mechanize'
-mechanize = Mechanize.new
-mechanize.open_timeout = 5
-mechanize.read_timeout = 10
-
-require 'awesome_print'
-require 'colorize'
-
-begin
-  puts getInstanceTypes(:mechanize => mechanize).ai
-rescue Timeout::Error => e
-  puts "Unable to retrieve instance type details in a reasonable time (#{mechanize.open_timeout}s). Giving up ...".light_red
+# =====================================================================================================================
+rc = DLDInternet::AWS::EC2::Instance_Types::Cli.start(ARGV)
+if rc.is_a?(Fixnum)
+  exit rc
+else
+  puts rc.ai
+  exit 0
 end
+
