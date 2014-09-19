@@ -8,7 +8,7 @@ module DLDInternet
     module EC2
       module Instance_Types
 
-        LOG_LEVELS = [:trace, :debug, :info, :note, :warn, :error, :fatal, :todo]
+        LOG_LEVELS = [:trace, :debug, :info, :step, :warn, :error, :fatal, :todo]
 
         module MixIns
           module NoCommands
@@ -22,7 +22,7 @@ module DLDInternet
                 raise "Invalid log-level: #{log_level}" unless LOG_LEVELS.include?(log_level)
                 _options[:log_level] = log_level
               else
-                _options[:log_level] ||= :note
+                _options[:log_level] ||= :step
               end
               @options = _options
             end
