@@ -25,7 +25,7 @@ module DLDInternet
           end
 
           def self.start(argv = ARGV, config = {})
-            if argv.size == 0 or argv[0] != 'get'
+            if argv.size == 0 or argv[0].match(%r'^--')
               argv.unshift('get')
             end
             super(argv,config)

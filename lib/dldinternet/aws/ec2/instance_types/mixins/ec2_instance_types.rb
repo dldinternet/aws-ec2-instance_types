@@ -35,7 +35,6 @@ module DLDInternet
                   end
                   f.close
                 end
-                @logger.info "  saved #{path}."
               rescue
                 abort! "!!! Could not write file #{path}: \nException: #{$!}\nParent directory exists? #{File.directory?(File.dirname(path))}\n"
               end

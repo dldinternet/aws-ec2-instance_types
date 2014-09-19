@@ -3,7 +3,7 @@ module DLDInternet
     module EC2
       module Instance_Types
         # aws-ec2-instance_types version
-        VERSION = '1.2.2'
+        VERSION = '1.3.0'
       end
     end
   end
