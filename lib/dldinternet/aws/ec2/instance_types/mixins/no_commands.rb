@@ -16,14 +16,15 @@ module DLDInternet
             include DLDInternet::Mixlib::Logging
 
             def validate_options
+              _options = options.dup
               if options[:log_level]
                 log_level = options[:log_level].to_sym
                 raise "Invalid log-level: #{log_level}" unless LOG_LEVELS.include?(log_level)
-                _options = options.dup
                 _options[:log_level] = log_level
-                @options = _options
+              else
+                _options[:log_level] ||= :note
               end
-              @options[:log_level] ||= :info
+              @options = _options
             end
 
             def parse_options
