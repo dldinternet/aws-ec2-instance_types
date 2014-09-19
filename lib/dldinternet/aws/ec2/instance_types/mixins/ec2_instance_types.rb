@@ -2,6 +2,7 @@ require 'thor'
 require 'awesome_print'
 require 'inifile'
 require 'colorize'
+require 'dldinternet/aws/ec2/instance_types/scraper'
 
 module DLDInternet
   module AWS
