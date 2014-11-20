@@ -32,7 +32,8 @@ module DLDInternet
                     when /json/
                       f.write JSON.pretty_generate(it, { indent: "\t", space: ' '})
                     else
-                      abort! "Internal: Unsupported format #{format}. Should have noticed this earlier!"
+                      f.write YAML::dump(it)
+                      # abort! "Unsupported save format #{format}!"
                   end
                   f.close
                 end
@@ -48,14 +49,15 @@ module DLDInternet
               case format
                 when /json/
                   JSON.parse(spec)
-                when /yaml/
+                #when /yaml/
+                else
                   begin
                     YAML.load(spec)
                   rescue Psych::SyntaxError => e
                     abort! "Error in the template specification: #{e.message}\n#{spec.split(/\n/).map{|l| "#{i+=1}: #{l}"}.join("\n")}"
                   end
-                else
-                  abort! "Unsupported file type: #{path}"
+                # else
+                #   abort! "Unsupported file type: #{path}"
               end
             end
 

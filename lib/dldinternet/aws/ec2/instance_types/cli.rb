@@ -16,6 +16,8 @@ module DLDInternet
           class_option :debug,        :type => :boolean
           class_option :log_level,    :type => :string, :banner => 'Log level ([:trace, :debug, :info, :step, :warn, :error, :fatal, :todo])'
           class_option :inifile,      :type => :string
+          class_option :help,         :type => :boolean
+          class_option :format,       :type => :string, :default => 'pretty', :banner => '[:pretty, :yaml, :json]'
 
           no_commands do
 
@@ -41,7 +43,15 @@ module DLDInternet
             parse_options
             puts 'get instance types' if options[:verbose]
 
-            puts DLDInternet::AWS::EC2::Instance_Types.getEC2_Instance_Types().ai
+            it = DLDInternet::AWS::EC2::Instance_Types.getEC2_Instance_Types()
+            case options[:format]
+            when /yaml/
+              puts it.to_yaml line_width: 1024, indentation: 4, canonical: false
+            when /json/
+              puts JSON.pretty_generate( it, { indent: "\t", space: ' '})
+            else
+              puts it.ai
+            end
             0
           end
 

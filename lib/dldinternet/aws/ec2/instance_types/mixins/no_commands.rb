@@ -28,6 +28,10 @@ module DLDInternet
             end
 
             def parse_options
+              if options[:help]
+                Cli.start(['help'])
+                exit 0
+              end
               validate_options
 
               lcs = ::Logging::ColorScheme.new( 'compiler', :levels => {
