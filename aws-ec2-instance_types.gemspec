@@ -27,7 +27,7 @@ Gem::Specification.new do |gem|
   gem.add_dependency 'awesome_print', '> 0'
   gem.add_dependency 'inifile', '> 0'
   gem.add_dependency 'colorize', '>= 0'
-  gem.add_dependency 'dldinternet-mixlib-logging', '>= 0.4.0'
+  gem.add_dependency 'dldinternet-mixlib-logging', '>= 0.4.3'
   gem.add_dependency 'psych'
   gem.add_dependency 'json'
 
