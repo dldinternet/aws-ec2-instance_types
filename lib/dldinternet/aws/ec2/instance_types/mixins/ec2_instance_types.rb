@@ -2,7 +2,7 @@ require 'thor'
 require 'awesome_print'
 require 'inifile'
 require 'colorize'
-require 'dldinternet/aws/ec2/instance_types/scraper'
+require 'dldinternet/aws/ec2/instance_types/aws-pricing-api-client'
 
 module DLDInternet
   module AWS
@@ -11,7 +11,7 @@ module DLDInternet
         module MixIns
           module EC2_Instance_Types
 
-            def getFileFormat(path)
+            def get_file_format(path)
               format = case File.extname(File.basename(path)).downcase
                          when /json|js/
                            'json'
@@ -22,8 +22,8 @@ module DLDInternet
                        end
             end
 
-            def saveEC2_Instance_Types(path,it)
-              format = getFileFormat(path)
+            def save_ec2_instance_types(path, it)
+              format = get_file_format(path)
               begin
                 File.open path, File::CREAT|File::TRUNC|File::RDWR, 0644 do |f|
                   case format
@@ -43,8 +43,8 @@ module DLDInternet
               0
             end
 
-            def loadEC2_Instance_Types(path)
-              format = getFileFormat(path)
+            def load_ec2_instance_types(path)
+              format = get_file_format(path)
               spec = File.read(path)
               case format
                 when /json/
@@ -61,20 +61,16 @@ module DLDInternet
               end
             end
 
-            def getEC2_Instance_Types(mechanize=nil)
-              unless mechanize
-                require 'mechanize'
-                mechanize = ::Mechanize.new
-                mechanize.open_timeout = 5
-                mechanize.read_timeout = 10
-              end
+            # noinspection RubyDefParenthesesInspection
+            def get_ec2_instance_types()
 
-              scraper = DLDInternet::AWS::EC2::Instance_Types::Scraper.new()
+              client = DLDInternet::AWS::EC2::Instance_Types::AWSPricingAPIClient.new()
 
               begin
-                return scraper.getInstanceTypes(:mechanize => mechanize)
-              rescue Timeout::Error => e
-                puts "Unable to retrieve instance type details in a reasonable time (#{mechanize.open_timeout}s). Giving up ...".light_red
+                # noinspection RubyParenthesesAfterMethodCallInspection
+                return client.get_instance_types()
+              rescue Exception => e
+                puts "Unable to retrieve instance type details. Giving up ...".light_red
                 return nil
               end
             end

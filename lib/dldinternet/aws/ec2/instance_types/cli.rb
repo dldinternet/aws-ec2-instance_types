@@ -3,7 +3,6 @@ require 'awesome_print'
 require 'colorize'
 require 'dldinternet/aws/ec2/instance_types/version'
 require 'dldinternet/aws/ec2/instance_types/error'
-require 'dldinternet/aws/ec2/instance_types/scraper'
 require 'dldinternet/aws/ec2/instance_types/cli'
 require 'dldinternet/aws/ec2/instance_types'
 
@@ -11,13 +10,14 @@ module DLDInternet
   module AWS
     module EC2
       module Instance_Types
+        # noinspection RubyParenthesesAfterMethodCallInspection
         class Cli < Thor
           class_option :verbose,      :type => :boolean
           class_option :debug,        :type => :boolean
           class_option :log_level,    :type => :string, :banner => 'Log level ([:trace, :debug, :info, :step, :warn, :error, :fatal, :todo])'
           class_option :inifile,      :type => :string
           class_option :help,         :type => :boolean
-          class_option :format,       :type => :string, :default => 'pretty', :banner => '[:pretty, :yaml, :json]'
+          class_option :format,       :type => :string, :default => 'pretty', :banner => '[:pretty, :yaml, :json]', :aliases => ['--output']
 
           no_commands do
 
@@ -48,7 +48,7 @@ module DLDInternet
             parse_options
             puts 'get instance types' if options[:verbose]
 
-            it = DLDInternet::AWS::EC2::Instance_Types.getEC2_Instance_Types()
+            it = DLDInternet::AWS::EC2::Instance_Types.get_ec2_instance_types()
             case options[:format]
             when /yaml/
               puts it.to_yaml line_width: 1024, indentation: 4, canonical: false
@@ -60,22 +60,22 @@ module DLDInternet
             0
           end
 
-          desc 'load ARGS', 'load instance types'
+          desc 'load PATH', 'load instance types'
           def load(path)
             parse_options
             puts 'load instance types' if options[:verbose]
 
-            it = DLDInternet::AWS::EC2::Instance_Types.loadEC2_Instance_Types(path)
+            it = DLDInternet::AWS::EC2::Instance_Types.load_ec2_instance_types(path)
             ap it
           end
 
-          desc 'save', 'save instance types'
+          desc 'save PATH', 'save instance types'
           def save(path)
             parse_options
             puts 'save instance types' if options[:verbose]
 
-            it = DLDInternet::AWS::EC2::Instance_Types.getEC2_Instance_Types()
-            DLDInternet::AWS::EC2::Instance_Types.saveEC2_Instance_Types(path, it)
+            it = DLDInternet::AWS::EC2::Instance_Types.get_ec2_instance_types()
+            DLDInternet::AWS::EC2::Instance_Types.save_ec2_instance_types(path, it)
           end
 
           default_task 'get'

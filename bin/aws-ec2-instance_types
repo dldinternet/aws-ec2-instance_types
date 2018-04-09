@@ -7,10 +7,12 @@ require 'dldinternet/aws/ec2/instance_types/cli'
 
 # =====================================================================================================================
 rc = DLDInternet::AWS::EC2::Instance_Types::Cli.start(ARGV)
-if rc.is_a?(Fixnum)
+if rc.is_a?(Integer)
   exit rc
+elsif rc.is_a?(IO)
+  exit 0
 else
-  puts rc.ai
+  $stderr.write "\n#{File.basename(__FILE__)}: \$? was '" + rc.ai + "'\n\n"
   exit 0
 end
 

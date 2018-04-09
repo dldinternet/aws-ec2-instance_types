@@ -1,6 +1,5 @@
 require 'thor'
 require 'awesome_print'
-require 'dldinternet/aws/ec2/instance_types/scraper'
 require 'colorize'
 require 'json'
 require 'yaml'
@@ -23,7 +22,7 @@ module DLDInternet
             parse_options
             puts 'load instance types' if options[:verbose]
 
-            it = loadEC2_Instance_Types(path)
+            it = load_ec2_instance_types(path)
             ap it
           end
 
@@ -32,8 +31,8 @@ module DLDInternet
             parse_options
             puts 'save instance types' if options[:verbose]
 
-            it = getEC2_Instance_Types()
-            saveEC2_Instance_Types(path, it)
+            it = get_ec2_instance_types()
+            save_ec2_instance_types(path, it)
           end
         end
       end

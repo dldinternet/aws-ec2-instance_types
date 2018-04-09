@@ -22,13 +22,12 @@ Gem::Specification.new do |gem|
   gem.add_development_dependency 'rubygems-tasks', '~> 0.2'
 
   gem.add_runtime_dependency('thor', ['>= 0.19.1'])
-  gem.add_runtime_dependency(%q<mechanize>, ['>= 2.7.2'])
-  gem.add_runtime_dependency(%q<nokogiri>, ['>= 1.5.0'])
   gem.add_dependency 'awesome_print', '> 0'
   gem.add_dependency 'inifile', '> 0'
   gem.add_dependency 'colorize', '>= 0'
-  gem.add_dependency 'dldinternet-mixlib-logging', '>= 0.4.3'
+  gem.add_dependency 'dldinternet-mixlib-logging', '>= 0.7.1'
   gem.add_dependency 'psych'
   gem.add_dependency 'json'
 
 end
+
